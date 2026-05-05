@@ -10,7 +10,7 @@ pipeline {
 
         stage('Clone Code') {
             steps {
-                git ''
+                git 'https://github.com/yaswanth-1999/trivy-integration.git'
             }
         }
 
