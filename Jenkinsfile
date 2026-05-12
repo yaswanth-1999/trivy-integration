@@ -10,13 +10,13 @@ pipeline {
 
         stage('Clone Code') {
             steps {
-                git 'https://github.com/yaswanth-1999/trivy-integration.git'
+                git branch: 'master', url: 'https://github.com/yaswanth-1999/trivy-integration.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
             }
         }
 
@@ -25,7 +25,7 @@ pipeline {
                 sh '''
                 trivy image --exit-code 1 --severity CRITICAL,HIGH \
                 --format json -o trivy-report.json \
-                $IMAGE_NAME:$IMAGE_TAG
+                ${IMAGE_NAME}:${IMAGE_TAG}
                 '''
             }
         }
@@ -35,7 +35,6 @@ pipeline {
                 archiveArtifacts artifacts: 'trivy-report.json', fingerprint: true
             }
         }
-
     }
 
     post {
