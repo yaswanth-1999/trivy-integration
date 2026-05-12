@@ -1,24 +1,23 @@
 FROM python:3.11-alpine
 
-# Install only required packages
-RUN apk add --no-cache \
-    build-base \
-    libffi-dev
-
 # Set working directory
 WORKDIR /app
 
-# Copy only requirements first (better caching)
+# Install only required system packages (minimal)
+RUN apk add --no-cache libffi
+
+# Copy dependency file first (for caching)
 COPY requirements.txt .
 
-# Install dependencies safely
+# Install Python dependencies safely
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app
+# Copy application code
 COPY . .
 
-# Run as non-root user (IMPORTANT for security)
+# Create non-root user (security best practice)
 RUN adduser -D appuser
 USER appuser
 
+# Run app
 CMD ["python", "app.py"]
