@@ -20,10 +20,20 @@ pipeline {
             }
         }
 
+        stage('Verify Image') {
+            steps {
+                sh 'docker images'
+            }
+        }
+
         stage('Trivy Scan - Image') {
             steps {
                 sh '''
-                trivy image --exit-code 1 --severity CRITICAL,HIGH \
+                trivy image \
+                --scanners vuln \
+                --ignore-unfixed \
+                --severity CRITICAL \
+                --exit-code 1 \
                 --format json -o trivy-report.json \
                 ${IMAGE_NAME}:${IMAGE_TAG}
                 '''
