@@ -29,15 +29,12 @@ pipeline {
                 '''
             }
         }
-
-        stage('Archive Report') {
-            steps {
-                archiveArtifacts artifacts: 'trivy-report.json', fingerprint: true
-            }
-        }
     }
 
     post {
+        always {
+            archiveArtifacts artifacts: 'trivy-report.json', fingerprint: true
+        }
         failure {
             echo "❌ Build failed due to vulnerabilities!"
         }
